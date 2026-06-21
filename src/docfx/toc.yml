@@ -1,7 +1,7 @@
 items:
   - name: Home
     href: index.md
-  - name: Tmds.DBus API
-    href: api/Tmds.DBus/Tmds.DBus.yml
-  - name: Tmds.DBus.Protocol API
-    href: api/Tmds.DBus.Protocol/Tmds.DBus.Protocol.yml
+  - name: Tmds2.DBus API
+    href: api/Tmds2.DBus/Tmds2.DBus.yml
+  - name: Tmds2.DBus.Protocol API
+    href: api/Tmds2.DBus.Protocol/Tmds2.DBus.Protocol.yml

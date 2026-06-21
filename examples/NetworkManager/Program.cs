@@ -1,5 +1,5 @@
 using NetworkManager.DBus;
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

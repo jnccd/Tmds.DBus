@@ -1,0 +1,322 @@
+using System;
+using System.Collections.Generic;
+using System.CommandLine;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Tmds2.DBus.Protocol;
+
+namespace Tmds2.DBus.Tool
+{
+    class CodeGenCommand : Command
+    {
+        public CodeGenCommand() : base("codegen")
+        {
+            Description = "Generate code from DBus interfaces";
+
+            Option<string?> serviceOption = CommandHelpers.CreateServiceOption();
+            Option<string?> serviceNameOption = new Option<string?>("--service-name");
+            serviceNameOption.Description = ".NET name for the service.";
+            Option<string> busOption = CommandHelpers.CreateBusOption();
+            Option<string> pathOption = CommandHelpers.CreatePathOption();
+            Option<bool> norecurseOption = CommandHelpers.CreateNoRecurseOption();
+            Option<bool> noInternalsVisibleToOption = new Option<bool>("--no-ivt");
+            noInternalsVisibleToOption.Description = "Don't add the InternalsVisibleTo Attribute";
+            noInternalsVisibleToOption.DefaultValueFactory = _ => false;
+            Option<string?> namespaceOption = new Option<string?>("--namespace");
+            namespaceOption.Description = "C# namespace";
+            Option<string?> outputOption = new Option<string?>("--output");
+            outputOption.Description = "File to write";
+            Option<bool> catOption = new Option<bool>("--cat");
+            catOption.Description = "Write to standard out instead of file";
+            catOption.DefaultValueFactory = _ => false;
+            Option<string[]?> skipOptions = new Option<string[]?>("--skip");
+            skipOptions.Description = "DBus interfaces to skip";
+            skipOptions.DefaultValueFactory = _ => null;
+            Option<string[]?> interfaceOptions = new Option<string[]?>("--interface");
+            interfaceOptions.Description = "DBus interfaces to include, optionally specify a name (e.g. 'org.freedesktop.NetworkManager.Device.Wired:WiredDevice')";
+            interfaceOptions.DefaultValueFactory = _ => null;
+            Option<bool> publicOption = new Option<bool>("--public");
+            publicOption.Description = "The generated code will have public access modifier";
+            publicOption.DefaultValueFactory = _ => false;
+            Option<bool> protocolOption = new Option<bool>("--protocol-api");
+            protocolOption.Description = "The generated code targets the Tmds2.DBus.Protocol API";
+            protocolOption.DefaultValueFactory = _ => false;
+            Option<bool> tmdsDbusApiOption = new Option<bool>("--tmds-dbus-api");
+            tmdsDbusApiOption.Description = "The generated code targets the Tmds2.DBus API";
+            tmdsDbusApiOption.DefaultValueFactory = _ => false;
+            Argument<string[]?> filesArgument = CommandHelpers.CreateFilesArgument();
+
+            Add(serviceOption);
+            Add(serviceNameOption);
+            Add(busOption);
+            Add(pathOption);
+            Add(norecurseOption);
+            Add(noInternalsVisibleToOption);
+            Add(namespaceOption);
+            Add(outputOption);
+            Add(catOption);
+            Add(skipOptions);
+            Add(interfaceOptions);
+            Add(publicOption);
+            Add(protocolOption);
+            Add(tmdsDbusApiOption);
+            Add(filesArgument);
+
+            this.SetAction((parseResult) =>
+            {
+                string? service = parseResult.GetValue(serviceOption);
+                string? serviceName = parseResult.GetValue(serviceNameOption);
+                string bus = parseResult.GetValue(busOption)!;
+                string path = parseResult.GetValue(pathOption)!;
+                bool noRecurse = parseResult.GetValue(norecurseOption);
+                bool noIvt = parseResult.GetValue(noInternalsVisibleToOption);
+                string? ns = parseResult.GetValue(namespaceOption);
+                string? output = parseResult.GetValue(outputOption);
+                bool cat = parseResult.GetValue(catOption);
+                string[]? skip = parseResult.GetValue(skipOptions);
+                string[]? interfaces = parseResult.GetValue(interfaceOptions);
+                bool publicMod = parseResult.GetValue(publicOption);
+                bool protocol = parseResult.GetValue(protocolOption);
+                bool tmdsDbusApi = parseResult.GetValue(tmdsDbusApiOption);
+                string[]? files = parseResult.GetValue(filesArgument);
+
+                if (protocol == tmdsDbusApi)
+                {
+                    Console.Error.WriteLine("Either --protocol-api or --tmds-dbus-api must be specified.");
+                    return 1;
+                }
+
+                if (string.IsNullOrEmpty(service) && (files == null || files.Length == 0))
+                {
+                    Console.Error.WriteLine("Service option or files argument must be specified.");
+                    return 1;
+                }
+
+                IEnumerable<string> skipInterfaces = new[] { "org.freedesktop.DBus.Introspectable", "org.freedesktop.DBus.Peer", "org.freedesktop.DBus.Properties" };
+                if (skip != null && skip.Length > 0)
+                {
+                    skipInterfaces = skipInterfaces.Concat(skip);
+                }
+
+                Dictionary<string, string>? interfaceMap = null;
+                if (interfaces != null && interfaces.Length > 0)
+                {
+                    interfaceMap = new Dictionary<string, string>();
+                    foreach (string interf in interfaces)
+                    {
+                        if (interf.Contains(':'))
+                        {
+                            string[] split = interf.Split(new[] { ':' });
+                            interfaceMap.Add(split[0], split[1]);
+                        }
+                        else
+                        {
+                            interfaceMap.Add(interf, null!);
+                        }
+                    }
+                }
+
+                string address = CommandHelpers.ParseBusAddress(bus);
+                if (serviceName == null)
+                {
+                    if (service != null)
+                    {
+                        string[] serviceSplit = service.Split(new[] { '.' });
+                        serviceName = serviceSplit[serviceSplit.Length - 1];
+                    }
+                    else
+                    {
+                        serviceName = "MyService";
+                    }
+                }
+                ns = ns ?? $"{serviceName}.DBus";
+                CodeGenArguments codeGenArguments = new CodeGenArguments
+                {
+                    Namespace = ns,
+                    Service = service,
+                    ServiceName = serviceName,
+                    Path = path,
+                    Address = address,
+                    Recurse = !noRecurse,
+                    NoInternalsVisibleTo = noIvt,
+                    OutputFileName = cat ? null : output ?? $"{ns}.cs",
+                    SkipInterfaces = skipInterfaces,
+                    Interfaces = interfaceMap,
+                    TypesAccessModifier = publicMod ? Accessibility.Public : Accessibility.NotApplicable,
+                    Files = files,
+                    ProtocolApi = protocol
+                };
+                bool result = TryGenerateCodeAsync(codeGenArguments).GetAwaiter().GetResult();
+                return result ? 0 : 1;
+            });
+        }
+
+        class Visitor
+        {
+            private CodeGenArguments _arguments;
+            private Dictionary<string, InterfaceDescription> _introspections;
+            private HashSet<string> _names;
+
+            public Visitor(CodeGenArguments codeGenArguments)
+            {
+                _introspections = new Dictionary<string, InterfaceDescription>();
+                _names = new HashSet<string>();
+                _arguments = codeGenArguments;
+            }
+
+            public bool VisitNode(string path, XElement nodeXml)
+            {
+                foreach (XElement interfaceXml in nodeXml.Elements("interface"))
+                {
+                    string fullName = interfaceXml.Attribute("name")!.Value;
+                    if (_introspections.ContainsKey(fullName) || _arguments.SkipInterfaces.Contains(fullName))
+                    {
+                        continue;
+                    }
+                    string? proposedName = null;
+                    if (_arguments.Interfaces != null)
+                    {
+                        if (!_arguments.Interfaces.TryGetValue(fullName, out proposedName))
+                        {
+                            continue;
+                        }
+                    }
+                    if (proposedName == null)
+                    {
+                        string[] split = fullName.Split(new[] { '.' });
+                        string name = Generator.Prettify(split[split.Length - 1]);
+                        proposedName = name;
+                        int index = 0;
+                        while (_names.Contains(proposedName))
+                        {
+                            proposedName = $"{name}{index}";
+                            index++;
+                        }
+                    }
+                    _names.Add(proposedName);
+                    _introspections.Add(fullName, new InterfaceDescription { InterfaceXml = interfaceXml, Name = proposedName });
+                    if (_arguments.Interfaces != null)
+                    {
+                        _arguments.Interfaces.Remove(fullName);
+                        return _arguments.Interfaces.Count != 0;
+                    }
+                }
+                return true;
+            }
+
+            public List<InterfaceDescription> Descriptions => _introspections.Values.ToList();
+        }
+
+        private static async Task<bool> TryGenerateCodeAsync(CodeGenArguments codeGenArguments)
+        {
+            Visitor visitor = new Visitor(codeGenArguments);
+            if (codeGenArguments.Service != null)
+            {
+                using (DBusConnection connection = new DBusConnection(codeGenArguments.Address))
+                {
+                    await connection.ConnectAsync();
+                    await NodeVisitor.VisitAsync(connection, codeGenArguments.Service, codeGenArguments.Path, codeGenArguments.Recurse, visitor.VisitNode);
+                }
+            }
+            if (codeGenArguments.Files != null)
+            {
+                foreach (string file in codeGenArguments.Files)
+                {
+                    await NodeVisitor.VisitAsync(file, visitor.VisitNode);
+                }
+            }
+            List<InterfaceDescription> descriptions = visitor.Descriptions;
+
+            string generatorDescription = GetGeneratorDescription();
+
+            IGenerator generator = codeGenArguments.ProtocolApi
+                ? (IGenerator)new ProtocolGenerator(
+                    new ProtocolGeneratorSettings
+                    {
+                        TypesAccessModifier = codeGenArguments.TypesAccessModifier,
+                        ServiceName = codeGenArguments.ServiceName,
+                        GeneratorDescription = generatorDescription
+                    })
+                : new Generator(
+                    new GeneratorSettings
+                    {
+                        NoInternalsVisibleTo = codeGenArguments.NoInternalsVisibleTo,
+                        TypesAccessModifier = codeGenArguments.TypesAccessModifier,
+                        GeneratorDescription = generatorDescription
+                    });
+
+            string code;
+            try
+            {
+                // note: we only support generating handlers through the roslyn source generator. The codegen command generates proxies only.
+                foreach (var desc in descriptions)
+                {
+                    desc.GenerateProxy = true;
+                    desc.GenerateHandler = false;
+                }
+                code = generator.Generate(codeGenArguments.Namespace, descriptions);
+            }
+            catch (InterfaceGenerationException ex)
+            {
+                Console.WriteLine($"There was an unexpected exception while generating code for the '{ex.InterfaceDescription.Name}' interface:");
+                Console.WriteLine(ex.InterfaceDescription.InterfaceXml);
+                Console.WriteLine();
+                Console.WriteLine("Exception:");
+                Console.WriteLine(ex.InnerException);
+                return false;
+            }
+
+            if (codeGenArguments.OutputFileName != null)
+            {
+                File.WriteAllText(codeGenArguments.OutputFileName, code);
+                Console.WriteLine($"Generated: {Path.GetFullPath(codeGenArguments.OutputFileName)}");
+            }
+            else
+            {
+                Console.WriteLine(code);
+            }
+            return true;
+        }
+
+        private static string GetGeneratorDescription()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            string toolVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "?";
+            // strip the metadata (commit sha)
+            int plusIndex = toolVersion.IndexOf('+');
+            if (plusIndex >= 0)
+            {
+                toolVersion = toolVersion.Substring(0, plusIndex);
+            }
+
+            string[] args = Environment.GetCommandLineArgs();
+            int codegenIndex = Array.FindIndex(args, arg => arg.Equals("codegen", StringComparison.OrdinalIgnoreCase));
+            string commandLineArgs = codegenIndex == -1
+                ? "codegen"
+                : string.Join(" ", args.Skip(codegenIndex).Select(arg => arg.Contains(' ') ? $"'{arg}'" : arg));
+
+            return $"Tmds2.DBus.Tool v{toolVersion} with arguments: {commandLineArgs}";
+        }
+
+        class CodeGenArguments
+        {
+            public required string Namespace { get; init; }
+            public string? Service { get; init; }
+            public required string ServiceName { get; init; }
+            public required string Path { get; init; }
+            public required string Address { get; init; }
+            public bool Recurse { get; init; }
+            public string? OutputFileName { get; init; }
+            public required IEnumerable<string> SkipInterfaces { get; init; }
+            public Dictionary<string, string>? Interfaces { get; init; }
+            public string[]? Files { get; init; }
+            public bool NoInternalsVisibleTo { get; init; }
+            public Accessibility TypesAccessModifier { get; init; }
+            public bool ProtocolApi { get; init; }
+        }
+    }
+}

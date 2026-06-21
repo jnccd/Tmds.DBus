@@ -1,0 +1,15 @@
+using System.Xml.Linq;
+
+namespace Tmds2.DBus.Tool
+{
+    class InterfaceDescription
+    {
+        public XElement InterfaceXml { get; set; }
+        public string Name { get; set; }
+        public string? SourceFile { get; set; }
+        public bool GenerateProxy { get; set; }
+        public bool GenerateHandler { get; set; }
+        public string HandlerName => Name + "Handler";
+        public string InterfaceName => InterfaceXml.Attribute("name")?.Value ?? string.Empty;
+    }
+}

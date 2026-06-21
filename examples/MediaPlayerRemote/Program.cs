@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using Mpris.DBus;
 
 Console.WriteLine("MediaPlayerRemote Sample");
@@ -112,7 +112,8 @@ class Player
             {
                 // Property changed occurs before we fetched the initial value.
                 return;
-            };
+            }
+            ;
             var newTitle = GetTitle(metadata);
             if (CurrentTitle != newTitle)
             {

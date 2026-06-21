@@ -1,20 +1,20 @@
 <Project>
   <ItemGroup>
-    <!-- Tmds.DBus dependencies -->
+    <!-- Tmds2.DBus dependencies -->
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Security.Principal.Windows" Version="5.0.0" />
 
-    <!-- Tmds.DBus.Protocol dependencies -->
+    <!-- Tmds2.DBus.Protocol dependencies -->
     <PackageVersion Include="System.IO.Pipelines" Version="8.0.0" />
     <PackageVersion Include="System.Threading.Channels" Version="8.0.0" />
 
-    <!-- Tmds.DBus and Tmds.DBus.Protocol common dependencies -->
+    <!-- Tmds2.DBus and Tmds2.DBus.Protocol common dependencies -->
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 
-    <!-- Tmds.DBus.Tool dependencies -->
+    <!-- Tmds2.DBus.Tool dependencies -->
     <PackageVersion Include="System.CommandLine" Version="2.0.1" />
 
-    <!-- Tmds.DBus.Generator dependencies -->
+    <!-- Tmds2.DBus.Generator dependencies -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
 
@@ -23,7 +23,7 @@
     <PackageVersion Include="Verify.XunitV3" Version="31.10.0" />
 
     <!-- Example dependencies -->
-    <PackageVersion Include="Tmds.DBus.SourceGenerator" Version="0.0.22">
+    <PackageVersion Include="Tmds2.DBus.SourceGenerator" Version="0.0.22">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>

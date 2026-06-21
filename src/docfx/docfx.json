@@ -4,12 +4,10 @@
       "src": [
         {
           "src": "..",
-          "files": [
-            "Tmds.DBus/Tmds.DBus.csproj"
-          ]
+          "files": ["Tmds2.DBus/Tmds2.DBus.csproj"]
         }
       ],
-      "dest": "api/Tmds.DBus",
+      "dest": "api/Tmds2.DBus",
       "includePrivateMembers": false,
       "disableGitFeatures": false,
       "disableDefaultFilter": false,
@@ -23,12 +21,10 @@
       "src": [
         {
           "src": "..",
-          "files": [
-            "Tmds.DBus.Protocol/Tmds.DBus.Protocol.csproj"
-          ]
+          "files": ["Tmds2.DBus.Protocol/Tmds2.DBus.Protocol.csproj"]
         }
       ],
-      "dest": "api/Tmds.DBus.Protocol",
+      "dest": "api/Tmds2.DBus.Protocol",
       "includePrivateMembers": false,
       "disableGitFeatures": false,
       "disableDefaultFilter": false,
@@ -42,45 +38,29 @@
   "build": {
     "content": [
       {
-        "files": [
-          "api/**/**.yml",
-          "api/**/index.md"
-        ]
+        "files": ["api/**/**.yml", "api/**/index.md"]
       },
       {
-        "files": [
-          "*.md",
-          "toc.yml"
-        ],
-        "exclude": [
-          "README.md"
-        ]
+        "files": ["*.md", "toc.yml"],
+        "exclude": ["README.md"]
       }
     ],
     "overwrite": [
       {
-        "files": [
-          "namespaces/**.md"
-        ]
+        "files": ["namespaces/**.md"]
       }
     ],
     "resource": [
       {
         "src": "../icon",
-        "files": [
-          "icon.svg",
-          "icon_128.png"
-        ]
+        "files": ["icon.svg", "icon_128.png"]
       }
     ],
     "output": "../../_site",
-    "template": [
-      "default",
-      "modern"
-    ],
+    "template": ["default", "modern"],
     "globalMetadata": {
-      "_appTitle": "Tmds.DBus Documentation",
-      "_appName": "Tmds.DBus",
+      "_appTitle": "Tmds2.DBus Documentation",
+      "_appName": "Tmds2.DBus",
       "_appLogoPath": "icon.svg",
       "_appFaviconPath": "icon.svg",
       "_enableSearch": true

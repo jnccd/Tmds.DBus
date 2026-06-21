@@ -1,6 +1,6 @@
-# Tmds.DBus.Protocol
+# Tmds2.DBus.Protocol
 
-The `Tmds.DBus.Protocol` packages provides a D-Bus protocol API.
+The `Tmds2.DBus.Protocol` packages provides a D-Bus protocol API.
 
 ## Example application
 
@@ -14,8 +14,9 @@ cd example
 ```
 
 Update `Program.cs`:
+
 ```cs
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 
 class Program
 {
@@ -173,6 +174,7 @@ class AddImplementation : IPathMethodHandler
 ```
 
 Now run the example:
+
 ```
 $ dotnet run
 The sum of 10 and 20 is 30.
@@ -180,7 +182,7 @@ The sum of 10 and 20 is 30.
 
 ## NativeAOT/Trimming
 
-`Tmds.DBus.Protocol` is compatible with NativeAOT and trimming.
+`Tmds2.DBus.Protocol` is compatible with NativeAOT and trimming.
 
 Methods that are not compatible have been annotated with both the `Obsolete` and `RequiresUnreferencedCode` attributes. These methods may be removed in a future version of the library.
 
@@ -330,6 +332,7 @@ VariantValue v4 = VariantValue.Struct("string", 5);
 Arrays can be created using the static `Array` method.
 
 For simple types, the C# array can be passed as the argument:
+
 ```cs
 VariantValue v5 = VariantValue.Array(new int[] { 1, 2, 3 })
 ```

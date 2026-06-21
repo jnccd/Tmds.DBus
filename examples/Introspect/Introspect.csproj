@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Tmds.DBus/Tmds.DBus.csproj" />
+    <ProjectReference Include="../../src/Tmds2.DBus/Tmds2.DBus.csproj" />
   </ItemGroup>
 
 </Project>

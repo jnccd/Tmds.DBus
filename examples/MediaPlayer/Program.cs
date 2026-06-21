@@ -1,5 +1,5 @@
 using System;
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Mpris.DBus;

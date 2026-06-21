@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageId>Tmds2.DBus.Generator</PackageId>
+    <Description>Source generator for Tmds2.DBus.Protocol which generates D-Bus proxy types from XML files</Description>
+    <PackageIcon>icon_128.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../icon/icon_128.png" Pack="true" PackagePath="/" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Directly use source files from Tmds2.DBus.Protocol instead of taking a library dependency. -->
+  <ItemGroup>
+    <Compile Include="..\Tmds2.DBus.Protocol\DBusType.cs" Link="Protocol\DBusType.cs" />
+    <Compile Include="..\Tmds2.DBus.Protocol\SignatureReader.cs" Link="Protocol\SignatureReader.cs" />
+  </ItemGroup>
+
+  <!-- Link shared files from Tmds2.DBus.Tool for code generation -->
+  <ItemGroup>
+    <Compile Include="..\Tmds2.DBus.Tool\ProtocolGenerator.cs" Link="Shared\ProtocolGenerator.cs" />
+    <Compile Include="..\Tmds2.DBus.Tool\InterfaceDescription.cs" Link="Shared\InterfaceDescription.cs" />
+    <Compile Include="..\Tmds2.DBus.Tool\IGenerator.cs" Link="Shared\IGenerator.cs" />
+    <Compile Include="..\Tmds2.DBus.Tool\Generator.cs" Link="Shared\Generator.cs" />
+  </ItemGroup>
+
+  <!-- Pack the generator DLL into the analyzers folder -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <!-- Package the props file -->
+  <ItemGroup>
+    <None Include="Tmds2.DBus.Generator.props" Pack="true" PackagePath="build" Visible="false" />
+  </ItemGroup>
+
+</Project>

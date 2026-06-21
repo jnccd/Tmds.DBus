@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tmds.DBus;
+using Tmds2.DBus;
 
 namespace Introspect
 {

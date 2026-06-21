@@ -9,7 +9,7 @@ For example, this preserves the ordering of values from `PropertyChanged` signal
 By design .NET Tasks do not preserve the ordering because (a.) a Task can complete
 synchronously, and (b.) a Task can complete on the threadpool when using `TaskCreationOptions.RunContinuationsAsynchronously`.
 
-`Tmds.DBus` supports two modes of operations that preserve the ordering.
+`Tmds2.DBus` supports two modes of operations that preserve the ordering.
 
 When the application has a single-threaded `SynchronizationContext`, it can be set on `ConnectionOptions`.
 All signals will be emitted on that context. The user is assumed to be using that `SynchronizationContext` while making method calls,
@@ -24,13 +24,13 @@ If you are writing some re-usable code (like a library), you can either let the 
 
 If your API usage doesn't require ordering to be preserved, you can set the `RunContinuationsAsynchronously` `ConnectionOption` to `true`.
 
-`Tmds.DBus.Protocol` doesn't provide these options. It follows the default model of .NET Tasks which is to use the `SynchronizationContext` if there is one.
+`Tmds2.DBus.Protocol` doesn't provide these options. It follows the default model of .NET Tasks which is to use the `SynchronizationContext` if there is one.
 For methods, you can opt-out by using the well-known `ConfigureAwait(false)`.
 For subscriptions, you can opt-out by setting the `emitOnCapturedContext` argument to `false`.
 
 ## Local Server
 
-Tmds.DBus supports running an in-process server that accepts connections. This allows other clients to connect
+Tmds2.DBus supports running an in-process server that accepts connections. This allows other clients to connect
 without an intermediate bus.
 
 This is done by passing `ServerConnectionOptions` to the `Connection` constructor.
@@ -40,7 +40,7 @@ The server is disposed together with the `Connection`.
 ```C#
 using System;
 using System.Threading.Tasks;
-using Tmds.DBus;
+using Tmds2.DBus;
 
 namespace Example
 {

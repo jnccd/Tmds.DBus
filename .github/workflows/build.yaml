@@ -21,13 +21,13 @@ jobs:
 
       - name: Run tests
         run: |
-          dotnet test --project test/Tmds.DBus.Tests
-          dotnet test --project test/Tmds.DBus.Protocol.Tests
-          dotnet test --project test/Tmds.DBus.Generator.Tests
+          dotnet test --project test/Tmds2.DBus.Tests
+          dotnet test --project test/Tmds2.DBus.Protocol.Tests
+          dotnet test --project test/Tmds2.DBus.Generator.Tests
 
       - name: Build tool
         run: |
-          pushd src/Tmds.DBus.Tool && dotnet build && popd
+          pushd src/Tmds2.DBus.Tool && dotnet build && popd
 
       - name: Build examples
         run: |
@@ -38,15 +38,15 @@ jobs:
       - name: Build packages
         run: |
           VERSION_SUFFIX="${{ github.run_number }}-${{ github.sha }}"
-          dotnet pack src/Tmds.DBus --configuration Release --output src/Tmds.DBus /p:VersionSuffix="$VERSION_SUFFIX"
-          dotnet pack src/Tmds.DBus.Protocol --configuration Release --output src/Tmds.DBus.Protocol /p:VersionSuffix="$VERSION_SUFFIX"
-          dotnet pack src/Tmds.DBus.Generator --configuration Release --output src/Tmds.DBus.Generator /p:VersionSuffix="$VERSION_SUFFIX"
-          dotnet pack src/Tmds.DBus.Tool --configuration Release --output src/Tmds.DBus.Tool /p:VersionSuffix="$VERSION_SUFFIX"
+          dotnet pack src/Tmds2.DBus --configuration Release --output src/Tmds2.DBus /p:VersionSuffix="$VERSION_SUFFIX"
+          dotnet pack src/Tmds2.DBus.Protocol --configuration Release --output src/Tmds2.DBus.Protocol /p:VersionSuffix="$VERSION_SUFFIX"
+          dotnet pack src/Tmds2.DBus.Generator --configuration Release --output src/Tmds2.DBus.Generator /p:VersionSuffix="$VERSION_SUFFIX"
+          dotnet pack src/Tmds2.DBus.Tool --configuration Release --output src/Tmds2.DBus.Tool /p:VersionSuffix="$VERSION_SUFFIX"
 
       - name: Publish packages
         run: |
-          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds.DBus/*.nupkg
-          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds.DBus.Protocol/*.nupkg
-          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds.DBus.Generator/*.nupkg
-          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds.DBus.Tool/*.nupkg
+          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds2.DBus/*.nupkg
+          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds2.DBus.Protocol/*.nupkg
+          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds2.DBus.Generator/*.nupkg
+          dotnet nuget push -s https://www.myget.org/F/tmds/api/v2/package -k "${{ secrets.NUGET_APIKEY }}" src/Tmds2.DBus.Tool/*.nupkg
         if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}

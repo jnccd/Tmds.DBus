@@ -1,59 +1,59 @@
-[![NuGet](https://img.shields.io/nuget/v/Tmds.DBus.Protocol.svg)](https://www.nuget.org/packages/Tmds.DBus.Protocol)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/Tmds.DBus.Protocol)](https://www.nuget.org/packages/Tmds.DBus.Protocol)
-[![GitHub](https://img.shields.io/badge/GitHub-tmds%2FTmds.DBus-blue?logo=github)](https://github.com/tmds/Tmds.DBus)
-[![License](https://img.shields.io/github/license/tmds/Tmds.DBus)](https://github.com/tmds/Tmds.DBus/blob/main/COPYING)
+[![NuGet](https://img.shields.io/nuget/v/Tmds2.DBus.Protocol.svg)](https://www.nuget.org/packages/Tmds2.DBus.Protocol)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Tmds2.DBus.Protocol)](https://www.nuget.org/packages/Tmds2.DBus.Protocol)
+[![GitHub](https://img.shields.io/badge/GitHub-tmds%2FTmds2.DBus-blue?logo=github)](https://github.com/tmds/Tmds2.DBus)
+[![License](https://img.shields.io/github/license/tmds/Tmds2.DBus)](https://github.com/tmds/Tmds2.DBus/blob/main/COPYING)
 ![.NET](https://img.shields.io/badge/.NET-Standard%202.0%20%7C%206.0%2B-512BD4)
 
-Tmds.DBus provides .NET libraries for communicating over D-Bus.
+Tmds2.DBus provides .NET libraries for communicating over D-Bus.
 
 ## What is D-Bus?
 
 From [freedesktop.org](https://www.freedesktop.org/wiki/Software/dbus/):
 
 > D-Bus is a message bus system, a simple way for applications to talk to one another. In addition to interprocess
-communication, D-Bus helps coordinate process lifecycle; it makes it simple and reliable to code a "single instance"
-application or daemon, and to launch applications and daemons on demand when their services are needed.
+> communication, D-Bus helps coordinate process lifecycle; it makes it simple and reliable to code a "single instance"
+> application or daemon, and to launch applications and daemons on demand when their services are needed.
 
 D-Bus is widely used on Linux systems. The **system bus** provides access to OS services like NetworkManager, systemd, and Bluetooth. The **session bus** connects applications running in a user's desktop session, enabling features like media player control, notifications, and desktop integration.
 
 A D-Bus service exposes **objects** at specific **paths**. Each object implements one or more **interfaces**, which define **methods** (remote procedure calls), **signals** (event notifications), and **properties** (readable/writable state). Interfaces are described using XML files.
 
-## Tmds.DBus
+## Tmds2.DBus
 
-Tmds.DBus provides two libraries:
+Tmds2.DBus provides two libraries:
 
-- [Tmds.DBus.Protocol](api/Tmds.DBus.Protocol/Tmds.DBus.Protocol.yml): a modern, high-performance D-Bus protocol library. It targets .NET Standard 2.0/2.1 and .NET 6.0+, and is compatible with NativeAOT/trimming (.NET 8+).
-- [Tmds.DBus](api/Tmds.DBus/Tmds.DBus.yml): an older library based on [dbus-sharp](https://github.com/mono/dbus-sharp), with async/await support. It targets .NET Standard 2.0 and .NET 6.0+.
+- [Tmds2.DBus.Protocol](api/Tmds2.DBus.Protocol/Tmds2.DBus.Protocol.yml): a modern, high-performance D-Bus protocol library. It targets .NET Standard 2.0/2.1 and .NET 6.0+, and is compatible with NativeAOT/trimming (.NET 8+).
+- [Tmds2.DBus](api/Tmds2.DBus/Tmds2.DBus.yml): an older library based on [dbus-sharp](https://github.com/mono/dbus-sharp), with async/await support. It targets .NET Standard 2.0 and .NET 6.0+.
 
-`Tmds.DBus.Protocol` has an associated Roslyn source generator `Tmds.DBus.Generator` that creates C# proxy and handler types from D-Bus interface XML files at compile time.
+`Tmds2.DBus.Protocol` has an associated Roslyn source generator `Tmds2.DBus.Generator` that creates C# proxy and handler types from D-Bus interface XML files at compile time.
 
-This guide covers `Tmds.DBus.Protocol` and the source generator `Tmds.DBus.Generator`. `Tmds.DBus` is in maintenance mode and should not be used for new projects.
+This guide covers `Tmds2.DBus.Protocol` and the source generator `Tmds2.DBus.Generator`. `Tmds2.DBus` is in maintenance mode and should not be used for new projects.
 
 ### Contributing and reporting bugs
 
-Found a bug or want to request a feature? Please [open an issue on GitHub](https://github.com/tmds/Tmds.DBus/issues).
+Found a bug or want to request a feature? Please [open an issue on GitHub](https://github.com/tmds/Tmds2.DBus/issues).
 
-We welcome pull requests on [GitHub](https://github.com/tmds/Tmds.DBus)! Unless you're making a trivial change, open an issue to discuss the change before making a pull request. For security vulnerabilities, use [GitHub's private security reporting](https://github.com/tmds/Tmds.DBus/security/advisories/new) instead.
+We welcome pull requests on [GitHub](https://github.com/tmds/Tmds2.DBus)! Unless you're making a trivial change, open an issue to discuss the change before making a pull request. For security vulnerabilities, use [GitHub's private security reporting](https://github.com/tmds/Tmds2.DBus/security/advisories/new) instead.
 
 ## Connecting to D-Bus
 
-The <xref:Tmds.DBus.Protocol.DBusAddress> class provides the standard bus addresses:
+The <xref:Tmds2.DBus.Protocol.DBusAddress> class provides the standard bus addresses:
 
 - `DBusAddress.Session` — the per-user session bus (desktop apps, media players, ...).
 - `DBusAddress.System` — the system-wide bus (NetworkManager, systemd, ...).
 
 Both return `null` when the corresponding bus is not available.
 
-Create a <xref:Tmds.DBus.Protocol.DBusConnection> with an address from <xref:Tmds.DBus.Protocol.DBusAddress> and call <xref:Tmds.DBus.Protocol.DBusConnection.ConnectAsync>:
+Create a <xref:Tmds2.DBus.Protocol.DBusConnection> with an address from <xref:Tmds2.DBus.Protocol.DBusAddress> and call <xref:Tmds2.DBus.Protocol.DBusConnection.ConnectAsync>:
 
 ```csharp
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 
 using var connection = new DBusConnection(DBusAddress.Session!);
 await connection.ConnectAsync();
 ```
 
-You can pass a <xref:Tmds.DBus.Protocol.DBusConnectionOptions> to configure behavior:
+You can pass a <xref:Tmds2.DBus.Protocol.DBusConnectionOptions> to configure behavior:
 
 ```csharp
 var options = new DBusConnectionOptions(DBusAddress.Session!)
@@ -63,19 +63,19 @@ var options = new DBusConnectionOptions(DBusAddress.Session!)
 using var connection = new DBusConnection(options);
 ```
 
-When <xref:Tmds.DBus.Protocol.DBusConnectionOptions.AutoConnect> is `true`, the connection is established automatically on first use, and <xref:Tmds.DBus.Protocol.DBusConnection.ConnectAsync> does not need to be called. Auto-connect is intended for proxy (consumer) use-cases; service-side features like requesting bus names and sending raw messages are not allowed.
+When <xref:Tmds2.DBus.Protocol.DBusConnectionOptions.AutoConnect> is `true`, the connection is established automatically on first use, and <xref:Tmds2.DBus.Protocol.DBusConnection.ConnectAsync> does not need to be called. Auto-connect is intended for proxy (consumer) use-cases; service-side features like requesting bus names and sending raw messages are not allowed.
 
-For a shared connection, you can use the static properties <xref:Tmds.DBus.Protocol.DBusConnection.Session> and <xref:Tmds.DBus.Protocol.DBusConnection.System>. These return a shared, auto-connect connection instance.
+For a shared connection, you can use the static properties <xref:Tmds2.DBus.Protocol.DBusConnection.Session> and <xref:Tmds2.DBus.Protocol.DBusConnection.System>. These return a shared, auto-connect connection instance.
 
-The <xref:Tmds.DBus.Protocol.DBusConnectionOptions.OnException> callback is invoked when an exception occurs on the connection. Its primary use-case is logging:
+The <xref:Tmds2.DBus.Protocol.DBusConnectionOptions.OnException> callback is invoked when an exception occurs on the connection. Its primary use-case is logging:
 
 ```csharp
 options.OnException = context => Console.Error.WriteLine($"D-Bus error at {context.Source}: {context.Exception.Message}");
 ```
 
-<xref:Tmds.DBus.Protocol.DBusConnectionOptions> can be subclassed to override `SetupAsync` and `Teardown`. This lets you customize connection setup — for example, providing a custom `Stream` via <xref:Tmds.DBus.Protocol.DBusConnectionOptions.SetupResult.ConnectionStream>, or controlling file descriptor passing via <xref:Tmds.DBus.Protocol.DBusConnectionOptions.SetupResult.SupportsFdPassing>.
+<xref:Tmds2.DBus.Protocol.DBusConnectionOptions> can be subclassed to override `SetupAsync` and `Teardown`. This lets you customize connection setup — for example, providing a custom `Stream` via <xref:Tmds2.DBus.Protocol.DBusConnectionOptions.SetupResult.ConnectionStream>, or controlling file descriptor passing via <xref:Tmds2.DBus.Protocol.DBusConnectionOptions.SetupResult.SupportsFdPassing>.
 
-To wait for a connection to close, await <xref:Tmds.DBus.Protocol.DBusConnection.DisconnectedAsync>:
+To wait for a connection to close, await <xref:Tmds2.DBus.Protocol.DBusConnection.DisconnectedAsync>:
 
 ```csharp
 Exception? reason = await connection.DisconnectedAsync();
@@ -89,16 +89,16 @@ To close the connection, call `Dispose`:
 connection.Dispose();
 ```
 
-When a connection fails, an exception derived from <xref:Tmds.DBus.Protocol.DBusConnectionException> is thrown:
+When a connection fails, an exception derived from <xref:Tmds2.DBus.Protocol.DBusConnectionException> is thrown:
 
-- <xref:Tmds.DBus.Protocol.DBusConnectFailedException> — thrown when a connection cannot be established.
-- <xref:Tmds.DBus.Protocol.DBusConnectionClosedException> — thrown when an operation fails because an established connection was disconnected. The `InnerException` indicates the reason for the close.
+- <xref:Tmds2.DBus.Protocol.DBusConnectFailedException> — thrown when a connection cannot be established.
+- <xref:Tmds2.DBus.Protocol.DBusConnectionClosedException> — thrown when an operation fails because an established connection was disconnected. The `InnerException` indicates the reason for the close.
 
 ## Consuming a D-Bus Service
 
 In this section we build a console application that controls media players using the [MPRIS](https://specifications.freedesktop.org/mpris-spec/latest/) D-Bus interface.
 
-We use `Tmds.DBus.Generator` to automatically create C# types from D-Bus interface XML files. You can find these XML files in system directories like `/usr/share/dbus-1/interfaces/`, in specification repositories, in application source code, or by introspecting running services using the [`dotnet dbus` tool](#the-dotnet-dbus-tool).
+We use `Tmds2.DBus.Generator` to automatically create C# types from D-Bus interface XML files. You can find these XML files in system directories like `/usr/share/dbus-1/interfaces/`, in specification repositories, in application source code, or by introspecting running services using the [`dotnet dbus` tool](#the-dotnet-dbus-tool).
 
 The MPRIS Player interface definition is available from the [MPRIS specification repository](https://gitlab.freedesktop.org/mpris/mpris-spec/-/blob/master/spec/org.mpris.MediaPlayer2.Player.xml). Download it and place it in a `dbus-xml` directory.
 
@@ -107,8 +107,8 @@ Create a console application and add the NuGet packages:
 ```bash
 dotnet new console -o MediaPlayerRemote
 cd MediaPlayerRemote
-dotnet add package Tmds.DBus.Protocol
-dotnet add package Tmds.DBus.Generator
+dotnet add package Tmds2.DBus.Protocol
+dotnet add package Tmds2.DBus.Generator
 ```
 
 Configure the project to generate proxy types. Add the XML file as an `AdditionalFiles` element with the `Namespace` and `DBusGeneratorMode` attributes:
@@ -121,8 +121,8 @@ Configure the project to generate proxy types. Add the XML file as an `Additiona
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Tmds.DBus.Protocol" Version="*" />
-    <PackageReference Include="Tmds.DBus.Generator" Version="*" />
+    <PackageReference Include="Tmds2.DBus.Protocol" Version="*" />
+    <PackageReference Include="Tmds2.DBus.Generator" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="dbus-xml/org.mpris.MediaPlayer2.Player.xml" Namespace="Mpris.DBus" DBusGeneratorMode="Proxy" />
@@ -130,12 +130,12 @@ Configure the project to generate proxy types. Add the XML file as an `Additiona
 </Project>
 ```
 
-When the project is built, the source generator creates a `Player` class (derived from the last component of the interface name `org.mpris.MediaPlayer2.Player`) in the `Mpris.DBus` namespace. The class inherits from <xref:Tmds.DBus.Protocol.DBusObject> and contains async methods corresponding to each D-Bus method, signal, and property.
+When the project is built, the source generator creates a `Player` class (derived from the last component of the interface name `org.mpris.MediaPlayer2.Player`) in the `Mpris.DBus` namespace. The class inherits from <xref:Tmds2.DBus.Protocol.DBusObject> and contains async methods corresponding to each D-Bus method, signal, and property.
 
 First, update `Program.cs` to connect to the session bus:
 
 ```csharp
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 
 using var connection = new DBusConnection(DBusAddress.Session ?? throw new InvalidOperationException("No session bus"));
 await connection.ConnectAsync();
@@ -163,16 +163,16 @@ string firstPlayer = players.First();
 Console.WriteLine($"Using: {firstPlayer}");
 ```
 
-On D-Bus, well-known names can change owners when services restart or are replaced. Sometimes an application needs to be aware of these changes in ownership. The <xref:Tmds.DBus.Protocol.NameOwnerWatcher> class enables tracking the current owner of a name to ensure all calls are made against the same owner.
+On D-Bus, well-known names can change owners when services restart or are replaced. Sometimes an application needs to be aware of these changes in ownership. The <xref:Tmds2.DBus.Protocol.NameOwnerWatcher> class enables tracking the current owner of a name to ensure all calls are made against the same owner.
 
 ```csharp
 NameOwnerWatcher watcher = await connection.WatchNameOwnerAsync(firstPlayer);
 firstPlayer = await watcher.WaitForOwnerAsync();
 ```
 
-The <xref:Tmds.DBus.Protocol.NameOwnerWatcher> provides <xref:Tmds.DBus.Protocol.NameOwnerWatcher.GetCurrentOwner> to check the current owner (returns `null` if unowned) and <xref:Tmds.DBus.Protocol.NameOwnerWatcher.GetOwnerChangedCancellationToken(System.String)> to get a `CancellationToken` that is cancelled when the owner changes. Call `Dispose` to stop watching.
+The <xref:Tmds2.DBus.Protocol.NameOwnerWatcher> provides <xref:Tmds2.DBus.Protocol.NameOwnerWatcher.GetCurrentOwner> to check the current owner (returns `null` if unowned) and <xref:Tmds2.DBus.Protocol.NameOwnerWatcher.GetOwnerChangedCancellationToken(System.String)> to get a `CancellationToken` that is cancelled when the owner changes. Call `Dispose` to stop watching.
 
-The <xref:Tmds.DBus.Protocol.DBusService> struct represents a named peer on the bus. We'll use it to reference the first player. The source generator creates `CreateXxx` extension methods for `DBusService` for each interface. We can use the `CreatePlayer` method to get a `Player` instance:
+The <xref:Tmds2.DBus.Protocol.DBusService> struct represents a named peer on the bus. We'll use it to reference the first player. The source generator creates `CreateXxx` extension methods for `DBusService` for each interface. We can use the `CreatePlayer` method to get a `Player` instance:
 
 ```csharp
 using Mpris.DBus;
@@ -243,7 +243,7 @@ IDisposable observer = await player.WatchPropertiesChangedAsync(...);
 observer.Dispose();
 ```
 
-Each D-Bus signal generates a `WatchXxxAsync` method. There are two forms: a simple one that provides the signal arguments directly, and an advanced one that wraps them in a <xref:Tmds.DBus.Protocol.Notification`1> which also signals completions:
+Each D-Bus signal generates a `WatchXxxAsync` method. There are two forms: a simple one that provides the signal arguments directly, and an advanced one that wraps them in a <xref:Tmds2.DBus.Protocol.Notification`1> which also signals completions:
 
 ```csharp
 // Simple: called with signal arguments directly.
@@ -267,7 +267,7 @@ IDisposable observer = await player.WatchSeekedAsync(
     }, ObserverFlags.EmitOnConnectionClosed);
 ```
 
-The <xref:Tmds.DBus.Protocol.ObserverFlags> enum controls which completion notifications are delivered to the `Notification<T>` handler:
+The <xref:Tmds2.DBus.Protocol.ObserverFlags> enum controls which completion notifications are delivered to the `Notification<T>` handler:
 
 - `EmitOnConnectionClosed` — notifies when the connection is closed.
 - `EmitOnObserverDispose` — notifies when the observer is disposed.
@@ -284,11 +284,11 @@ You can call `Stop` on the notification from within the handler to stop the obse
 
 Signal and property change handlers may be `async`. Note that async continuations can run in parallel: the library does not wait for one handler invocation to complete before delivering the next notification.
 
-Method calls and signal reads can throw exceptions derived from <xref:Tmds.DBus.Protocol.DBusMessageException>:
+Method calls and signal reads can throw exceptions derived from <xref:Tmds2.DBus.Protocol.DBusMessageException>:
 
-- <xref:Tmds.DBus.Protocol.DBusErrorReplyException> — the remote service returned a D-Bus error reply. The `ErrorName` and `ErrorMessage` properties contain the error details.
-- <xref:Tmds.DBus.Protocol.DBusOwnerChangedException> — the owner of the well-known name is known to have changed (when using a `NameOwnerWatcher`).
-- <xref:Tmds.DBus.Protocol.DBusUnexpectedValueException> — a received message contains a value that doesn't match expectations (e.g. an unexpected type or out-of-range value).
+- <xref:Tmds2.DBus.Protocol.DBusErrorReplyException> — the remote service returned a D-Bus error reply. The `ErrorName` and `ErrorMessage` properties contain the error details.
+- <xref:Tmds2.DBus.Protocol.DBusOwnerChangedException> — the owner of the well-known name is known to have changed (when using a `NameOwnerWatcher`).
+- <xref:Tmds2.DBus.Protocol.DBusUnexpectedValueException> — a received message contains a value that doesn't match expectations (e.g. an unexpected type or out-of-range value).
 
 ### Complete example
 
@@ -299,7 +299,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using Mpris.DBus;
 
 Console.WriteLine("MediaPlayerRemote Sample");
@@ -415,8 +415,8 @@ Create a console application and add the NuGet packages:
 ```bash
 dotnet new console -o Player
 cd Player
-dotnet add package Tmds.DBus.Protocol
-dotnet add package Tmds.DBus.Generator
+dotnet add package Tmds2.DBus.Protocol
+dotnet add package Tmds2.DBus.Generator
 ```
 
 ### Defining the interface
@@ -437,6 +437,7 @@ Create a file `dbus-xml/org.example.Player.xml`:
 ```
 
 This interface defines:
+
 - `PlayPause`: toggles between playing and paused.
 - `Next`: skips to the next track.
 - `Volume`: read-write property for the playback volume (0.0–1.0).
@@ -455,8 +456,8 @@ Configure the project to generate handler types. Add the XML file as an `Additio
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Tmds.DBus.Protocol" Version="*" />
-    <PackageReference Include="Tmds.DBus.Generator" Version="*" />
+    <PackageReference Include="Tmds2.DBus.Protocol" Version="*" />
+    <PackageReference Include="Tmds2.DBus.Generator" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="dbus-xml/org.example.Player.xml"
@@ -533,7 +534,7 @@ class Player : INotifyPropertyChanged, IDisposable
 Next, create a class that extends `DBusHandler` and implements `IPlayerHandler`. It delegates to the `Player` for state and implements `IPlayerProperties` so the property context handlers can read and write values. It subscribes to the `PropertyChanged` event to emit D-Bus property change notifications. The handler locks on `SyncRoot` to ensure consistent reads and writes:
 
 ```csharp
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using Example.DBus;
 
 class PlayerHandler : DBusHandler, IPlayerHandler, IPlayerProperties, IDisposable
@@ -609,7 +610,7 @@ The handler implements `IPlayerProperties` to expose property values. Read-only 
 Register the handler with the connection and request a well-known bus name so clients can discover the service. Because the `Player` state is separate from the handler, the same instance can be reused across connection restarts:
 
 ```csharp
-using Tmds.DBus.Protocol;
+using Tmds2.DBus.Protocol;
 using Example.DBus;
 
 using var player = new Player();
@@ -738,7 +739,7 @@ protected override bool SupportsInterface(DBusInterface dbusInterface, ReadOnlyS
 
 D-Bus has a **variant** type (`v`) that can hold any D-Bus value. Variants appear frequently in D-Bus APIs: properties dictionaries are typically `a{sv}` (dictionary of string to variant), and metadata is often encoded the same way.
 
-To represent variants in a trim-safe, AOT-compatible, and round-trippable way, `Tmds.DBus.Protocol` uses a dedicated <xref:Tmds.DBus.Protocol.VariantValue> struct type.
+To represent variants in a trim-safe, AOT-compatible, and round-trippable way, `Tmds2.DBus.Protocol` uses a dedicated <xref:Tmds2.DBus.Protocol.VariantValue> struct type.
 
 `VariantValue` avoids copies when possible. Do not modify data used to construct a `VariantValue` until that value has been written. Similarly, data returned by methods like `GetArray` may return the underlying storage; modifying it may affect other users of the object.
 
@@ -800,11 +801,13 @@ VariantValue v3 = VariantValue.Int32(42);
 The library includes `Array<T>`, `Dict<TKey, TValue>`, and `Struct<T1, ...>` types that enable creating arbitrary composed types. They support collection initializer syntax and implicitly convert to `VariantValue`. For some composite D-Bus types, the use of these .NET types is optional and they can be created directly using the static `Array` and `Struct` methods on `VariantValue` as described below.
 
 Arrays:
+
 ```csharp
 VariantValue v = new Array<int>() { 1, 2, 3 };
 ```
 
 Dictionaries:
+
 ```csharp
 VariantValue v = new Dict<string, VariantValue>()
 {
@@ -814,11 +817,13 @@ VariantValue v = new Dict<string, VariantValue>()
 ```
 
 Structs:
+
 ```csharp
 VariantValue v = Struct.Create("hello", 42);
 ```
 
 These types can be nested to build complex structures:
+
 ```csharp
 VariantValue v = Struct.Create((byte)1, Struct.Create("nested", "struct"));
 ```
@@ -831,32 +836,35 @@ VariantValue v = VariantValue.Array(new List<string>() { "a", "b" });
 ```
 
 For arrays of variants (D-Bus type `av`), use `ArrayOfVariant`:
+
 ```csharp
 VariantValue v = VariantValue.ArrayOfVariant(new VariantValue[] { 1, "hello", true });
 ```
 
 Structs can also be created using `VariantValue` arguments:
+
 ```csharp
 VariantValue v = VariantValue.Struct("hello", 42);
 ```
 
 Nested variants (D-Bus type `v`) wrap another `VariantValue`:
+
 ```csharp
 VariantValue v = VariantValue.Variant(42);
 ```
 
 ## The `dotnet dbus` Tool
 
-`Tmds.DBus.Tool` is a .NET global tool for exploring D-Bus and generating code. Install it with:
+`Tmds2.DBus.Tool` is a .NET global tool for exploring D-Bus and generating code. Install it with:
 
 ```bash
-dotnet tool install -g Tmds.DBus.Tool
+dotnet tool install -g Tmds2.DBus.Tool
 ```
 
-| Command | Description |
-|---------|-------------|
-| `dotnet dbus list` | List D-Bus services, objects, or interfaces. Subcommands: `services`, `activatable-services`, `objects`, `interfaces`. Can also list interfaces from XML files. |
-| `dotnet dbus codegen` | Generate C# proxy code by introspecting a live service or from XML interface files. Intended for the `Tmds.DBus` library; for `Tmds.DBus.Protocol`, using the Roslyn source generator is recommended. |
-| `dotnet dbus monitor` | Watch D-Bus traffic in real time (method calls, returns, errors, signals). |
+| Command               | Description                                                                                                                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dotnet dbus list`    | List D-Bus services, objects, or interfaces. Subcommands: `services`, `activatable-services`, `objects`, `interfaces`. Can also list interfaces from XML files.                                         |
+| `dotnet dbus codegen` | Generate C# proxy code by introspecting a live service or from XML interface files. Intended for the `Tmds2.DBus` library; for `Tmds2.DBus.Protocol`, using the Roslyn source generator is recommended. |
+| `dotnet dbus monitor` | Watch D-Bus traffic in real time (method calls, returns, errors, signals).                                                                                                                              |
 
 All commands accept `--bus session|system|<address>` to select the bus (default: `session`). Use `dotnet dbus <command> --help` for the full list of options.

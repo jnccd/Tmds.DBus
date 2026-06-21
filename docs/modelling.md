@@ -2,7 +2,7 @@
 
 ## Objects Types and Interfaces
 
-To model a D-Bus interface using Tmds.DBus we create a .NET interface with the `DBusInterface` attribute and inherit `IDBusObject`.
+To model a D-Bus interface using Tmds2.DBus we create a .NET interface with the `DBusInterface` attribute and inherit `IDBusObject`.
 
 ```cs
 [DBusInterface("org.mpris.MediaPlayer2.Player")]
@@ -38,27 +38,27 @@ public interface IPlayer : ITrackList
 
 The D-Bus types are modeled using the following .NET types.
 
-Conventional name | Signature | .NET Type (C# type)
-------------------|-----------|--------------------
-BYTE	          | y         | System.Byte (byte)
-BOOLEAN	          | b         |	System.Boolean (bool)
-INT16	          | n         |	System.Int16 (short)
-UINT16	          | q         |	System.UInt16 (ushort)
-INT32	          | i         |	System.Int32 (int)
-UINT32	          | u         |	System.UInt32 (uint)
-INT64	          | x         |	System.Int64 (long)
-UINT64	          | t         |	System.UInt64 (ulong)
-N/A    	          | f         |	System.Single (float)
-DOUBLE	          | d         |	System.Double (double)
-UNIX_FD	          | h         |	SafeHandle derived type
-STRING	          | s         |	System.String (string)
-OBJECT_PATH	      | o         |	ObjectPath, IDBusObject, D-Bus interface, D-Bus object type interface
-SIGNATURE	      | g         |	N/A
-ARRAY             | a.        | T[], IEnumerable<>, IList<>, ICollection<>
-DICTIONARY        | a{..}     | IDictionary, ARRAY of KeyValuePair<,>
-SV DICTIONARY     | a{sv}     | [Dictionary] class or struct: public and non-public instance fields
-STRUCT            | (...)     | [StructLayout(LayoutKind.Sequential)] class or struct: public and non-public instance fields, C# 7 tuple
-VARIANT           | v         | object
+| Conventional name | Signature | .NET Type (C# type)                                                                                      |
+| ----------------- | --------- | -------------------------------------------------------------------------------------------------------- |
+| BYTE              | y         | System.Byte (byte)                                                                                       |
+| BOOLEAN           | b         | System.Boolean (bool)                                                                                    |
+| INT16             | n         | System.Int16 (short)                                                                                     |
+| UINT16            | q         | System.UInt16 (ushort)                                                                                   |
+| INT32             | i         | System.Int32 (int)                                                                                       |
+| UINT32            | u         | System.UInt32 (uint)                                                                                     |
+| INT64             | x         | System.Int64 (long)                                                                                      |
+| UINT64            | t         | System.UInt64 (ulong)                                                                                    |
+| N/A               | f         | System.Single (float)                                                                                    |
+| DOUBLE            | d         | System.Double (double)                                                                                   |
+| UNIX_FD           | h         | SafeHandle derived type                                                                                  |
+| STRING            | s         | System.String (string)                                                                                   |
+| OBJECT_PATH       | o         | ObjectPath, IDBusObject, D-Bus interface, D-Bus object type interface                                    |
+| SIGNATURE         | g         | N/A                                                                                                      |
+| ARRAY             | a.        | T[], IEnumerable<>, IList<>, ICollection<>                                                               |
+| DICTIONARY        | a{..}     | IDictionary, ARRAY of KeyValuePair<,>                                                                    |
+| SV DICTIONARY     | a{sv}     | [Dictionary] class or struct: public and non-public instance fields                                      |
+| STRUCT            | (...)     | [StructLayout(LayoutKind.Sequential)] class or struct: public and non-public instance fields, C# 7 tuple |
+| VARIANT           | v         | object                                                                                                   |
 
 The preferred type to represent an ARRAY is `T[]`.
 A DICTIONARY can be represented as `IDictionary<TKey, TValue>` but also as `KeyValuePair<TKey, TValue>[]`. The latter can be used to avoid the overhead of adding the elements to a dictionary class.
@@ -68,9 +68,9 @@ When an `object` is serialized as a VARIANT, it's underlying type is determined 
 
 When an VARIANT is deserialized as an `object` the matching .NET type is used. ARRAY types are deserialized as `T[]`. DICTIONARY types are deserialized as `IDictionary<TKey,TValue>`. STRUCTS are deserialized as `System.ValueTuple`.
 
-The `float` type is not part of the D-Bus specification. It was implemented as part of ndesk-dbus and is supported by Tmds.DBus.
+The `float` type is not part of the D-Bus specification. It was implemented as part of ndesk-dbus and is supported by Tmds2.DBus.
 
-`SafeHandle` derived types can be used to receive and send file descriptors. The derived type must have a `(IntPtr, Boolean)` constructor. When a `SafeHandle` is sent, it will be Disposed. Tmds.DBus provides a `CloseSafeHandle` class, that can be used as a generic `SafeHandle`.
+`SafeHandle` derived types can be used to receive and send file descriptors. The derived type must have a `(IntPtr, Boolean)` constructor. When a `SafeHandle` is sent, it will be Disposed. Tmds2.DBus provides a `CloseSafeHandle` class, that can be used as a generic `SafeHandle`.
 
 ## Methods
 
@@ -94,7 +94,7 @@ struct RetVal
     public string arg1;
     public int    arg2;
 }
-[DBusInterface("tmds.dbus.example.structret")]
+[DBusInterface("Tmds2.DBus.example.structret")]
 public interface ITrackList
 {
     // 2 output parameter with signatures `s` and `i`
@@ -105,7 +105,7 @@ public interface ITrackList
 }
 
 // or using C# 7 tuples
-[DBusInterface("tmds.dbus.example.structret")]
+[DBusInterface("Tmds2.DBus.example.structret")]
 public interface ITrackList
 {
     // 2 output parameter with signatures `s` and `i`
@@ -119,7 +119,7 @@ public interface ITrackList
 In case the return type of a method is `Task<object>` the method may me modeled as a generic method of `Task<T>`.
 
 ```cs
-[DBusInterface("tmds.dbus.example.variantreturn")]
+[DBusInterface("Tmds2.DBus.example.variantreturn")]
 public interface ITrackList
 {
     // user needs to cast, e.g. (ObjectPath)(await FooAsync())
