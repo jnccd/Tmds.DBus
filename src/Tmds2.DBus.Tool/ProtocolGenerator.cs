@@ -1689,13 +1689,13 @@ namespace Tmds2.DBus.Tool
                 AppendLine($"public ValueTask<IDisposable> WatchPropertiesChangedAsync(Action<Notification<{changedInterfaceName}>> handler, ObserverFlags flags, bool emitOnCapturedContext = true, object? state = null)");
                 StartBlock();
                 AppendLine($"return Connection.WatchPropertiesChangedAsync(Destination, Path, DBusInterfaceName, (Message m, object? s) => ReadMessage(m), handler, flags, emitOnCapturedContext, state);");
-                AppendLine($"static {changedInterfaceNaTmds2.DBusessage(Message message)");
+                AppendLine($"static {changedInterfaceName} ReadMessage(Message message)");
                 StartBlock();
                 AppendLine("var reader = message.GetBodyReader();");
                 AppendLine("reader.ReadString(); // interface");
                 AppendLine($"return {propertiesClassName}.ReadFrom(ref reader, withInvalidated: true);");
                 EndBlock();
-                EndBlock();Tmds2.DBus
+                EndBlock();
                 AppendLine($"public ValueTask<IDisposable> WatchPropertiesChangedAsync(Func<Notification<{changedInterfaceName}>, ValueTask> handler, ObserverFlags flags, bool emitOnCapturedContext = true, object? state = null)");
                 StartBlock();
                 AppendLine($"return Connection.WatchPropertiesChangedAsync(Destination, Path, DBusInterfaceName, (Message m, object? s) => ReadMessage(m), handler, flags, emitOnCapturedContext, state);");
@@ -1738,7 +1738,7 @@ namespace Tmds2.DBus.Tool
             }
 
             EndBlock();
-            }
+        }
 
         private void AppendPropertySetMethod(Argument property)
         {
